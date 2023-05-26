@@ -3,6 +3,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.BasicStroke;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -10,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 import static java.awt.Font.BOLD;
@@ -22,8 +24,9 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     private Timer timer;
     private Rectangle orangeRect;
     private Point delta;
-    private int condimentTimerCount;
+    private Timer condimentTimer;
     private boolean condimentTimerOn;
+    private ArrayList<Oval> stream;
 
     // constructor
     public AnimationPanel() {
@@ -44,8 +47,10 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         addMouseListener(this);  // this panel should listen for mouse clicks
         addMouseMotionListener(this);  // this panel should listen for mouse drags
 
-        condimentTimerCount = 0;
+        condimentTimer = new Timer(5000,this);
         condimentTimerOn = false;
+
+        stream = new ArrayList<>();
     }
 
     // important method that is inherited from JComponent and overridden;
@@ -78,6 +83,21 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         g2d.setStroke(new BasicStroke(3)); // change pen thickness
         g2d.setColor(Color.orange);
         g2d.draw(orangeRect);  // draw the orange rectangle
+//        Oval oval = new Oval();
+//        oval.setPoint1Values(250,250);
+//        oval.setPoint2Values(250,250);
+//        oval.draw(g2d);
+            //g2d.fillO
+        for(Oval oval : stream){
+            g2d.setStroke(new BasicStroke(1)); // change pen thickness
+            g2d.setColor(Color.red);
+            //g2d.draw((Shape)oval);
+            oval.draw(g2d);
+            //g2d.drawOval(oval.getMinX(),oval.getMinY(),oval.getWidth(),oval.getHeight());
+            //g2d.fillOval(oval.getMinX(),oval.getMinY(),oval.getWidth(),oval.getHeight());
+            oval.setPoint1Values(getX(),getY()-10);
+            oval.setPoint2Values(getX(),getY()-10);
+        }
 
     }
 
@@ -131,13 +151,13 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 //            moveEnemy();
 //        }
         if(condimentTimerOn){
-            condimentTimerCount+=10;
-            if(condimentTimerCount == 5000){
+
+        }
+        if(e.getSource() instanceof Timer){
+            if(e.getSource() == condimentTimer){
                 condimentTimerOn = false;
                 orangeRect.setLocation(20,20);
-                condimentTimerCount = 0;
             }
-
         }
         repaint(); // this is an inherited method, and calling it forces the "paint" method above to be re-queued in the graphics engine
     }
@@ -147,6 +167,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     @Override
     public void mousePressed(MouseEvent e) {
         // if the mouse click's coordinate occurred in the orange rectangle, then the user has clicked it
+        //
         if (!condimentTimerOn && orangeRect.contains(e.getPoint())) {
             // calculate offset for orange rectangle's movement
             int xDiff = e.getX() - orangeRect.x;
@@ -154,6 +175,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             delta = new Point(xDiff, yDiff);
             isClickingOrangeRect = true; // track that user has clicked orange rectangle (used below in mouseDragged)
         }
+
     }
 
     // called when the mouse button is released
@@ -167,6 +189,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         if(isClickingOrangeRect && !condimentTimerOn){
             condimentTimerOn=true;
             isClickingOrangeRect = false;
+            condimentTimer.restart();
         }
 
     }
@@ -184,11 +207,11 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     @Override
     public void mouseDragged(MouseEvent e) {
         // if the user is clicking the orange rectangle when the dragging begins, the rectangle should move!
-        if (isClickingOrangeRect) {
-            int newRectX = e.getX() - delta.x;
-            int newRectY = e.getY() - delta.y;
-            orangeRect.setLocation(newRectX, newRectY);
-            repaint(); // this is an inherited method, and calling it forces the "paint" method above to be re-queued in the graphics engine
+        if (isClickingOrangeRect || condimentTimerOn) {
+            double newRectX = e.getX() - orangeRect.getWidth()/2;
+            double newRectY = e.getY() - orangeRect.getHeight()/2;
+            orangeRect.setLocation((int)newRectX, (int)newRectY);
+            repaint();
         }
     }
 
@@ -198,6 +221,12 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             double newRectX = e.getX() - orangeRect.getWidth()/2;
             double newRectY = e.getY() - orangeRect.getHeight()/2;
             orangeRect.setLocation((int)newRectX, (int)newRectY);
+            Oval oval = new Oval();
+            double ovalX = e.getX() + orangeRect.getWidth()/2;
+            double ovalY = e.getY() + orangeRect.getHeight();
+            oval.setPoint1Values((int)ovalX,(int)ovalY);
+            oval.setPoint2Values((int)ovalX,(int)ovalY);
+            stream.add(oval);
             repaint();
         }
     }
