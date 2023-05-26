@@ -227,6 +227,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             oval.setPoint1Values((int)ovalX,(int)ovalY);
             oval.setPoint2Values((int)ovalX,(int)ovalY);
             stream.add(oval);
+            System.out.println(stream);
             repaint();
         }
     }
