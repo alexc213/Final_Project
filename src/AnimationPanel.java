@@ -11,37 +11,34 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 import java.awt.*;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.*;
+
 import static java.awt.Font.BOLD;
 
 // a subclass of JPanel; this panel has been designed entirely in code (not using the UI designer)
 public class AnimationPanel extends JPanel implements ActionListener, MouseListener, MouseMotionListener {
     private boolean isClickingOrangeRect;
-    private boolean won;
-    private boolean gameOver;
     private Timer timer;
     private Rectangle orangeRect;
+
     private Point delta;
     private Timer condimentTimer;
     private boolean condimentTimerOn;
     private ArrayList<Line> stream;
-    private MouseEvent event;
     private double previousX;
 
     private double previousY;
     private String direction;
+    private JLabel label;
 
     // constructor
-    public AnimationPanel() {
+    public AnimationPanel(){
         // initialize variables
 
         isClickingOrangeRect = false;
-        won = false;
-        gameOver = false;
-
         // initialize Timer object, responsible for the animation
         timer = new Timer(10, this); // set timer to have 10ms pulses; each pulse triggers an ActionEvent
         timer.start();
@@ -57,11 +54,24 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         condimentTimerOn = false;
 
         stream = new ArrayList<>();
-        event = null;
 
         previousX = -1;
         previousY = 0;
         direction = null;
+
+        label = new JLabel();
+        add(label);
+
+        ImageIcon icon = new ImageIcon("src/picture.png");
+        Image image = icon.getImage();
+
+        icon.setImage(image.getScaledInstance(25,75,1));
+        label.setBounds(orangeRect);
+        label.setIcon(icon);
+        //label.setVisible(true);
+
+        label.setSize(25,75);
+
     }
 
     // important method that is inherited from JComponent and overridden;
@@ -93,12 +103,22 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         // draw red enemy rectangle and orange rectangle on the screen
         g2d.setStroke(new BasicStroke(3)); // change pen thickness
         g2d.setColor(Color.orange);
-        g2d.draw(orangeRect);  // draw the orange rectangle
+        //g2d.draw(orangeRect);  // draw the orange rectangle
+        label.setLocation(orangeRect.x,orangeRect.y);
+        //new ImageObserver;
+//        ImageObserver observer = null;
+//        g2d.drawImage("picture.png", 100, 100, observer);
+
+        //label.setBounds(100,100,100,100);
+        //label.setBounds(orangeRect);
+        //label.setLocation(100,100);
+        //g2d.drawImag;
 //        Oval oval = new Oval();
 //        oval.setPoint1Values(250,250);
 //        oval.setPoint2Values(250,250);
 //        oval.draw(g2d);
             //g2d.fillO
+
         if(condimentTimerOn){
             Line line = new Line();
             line.setPoint1Values((int)previousX,(int)(previousY+32.5));
@@ -221,12 +241,18 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
         //orangeRect.setLocation(20,20);
         if(isClickingOrangeRect && !condimentTimerOn){
-            event = e;
-            condimentTimerOn=true;
-            isClickingOrangeRect = false;
-            previousX = e.getX();
-            previousY = e.getY();
-            condimentTimer.restart();
+            //Point p = new Point(e.getX(),e.getY());
+            //Rectangle rectangle = new Rectangle(0,0,40,40);
+            if(e.getX()<100 && e.getY()<200){
+                orangeRect.setLocation(20,20);
+            }else{
+                condimentTimerOn=true;
+                isClickingOrangeRect = false;
+                previousX = e.getX();
+                previousY = e.getY();
+                condimentTimer.restart();
+            }
+
         }
 
     }
@@ -245,6 +271,8 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     public void mouseDragged(MouseEvent e) {
         // if the user is clicking the orange rectangle when the dragging begins, the rectangle should move!
         if (isClickingOrangeRect || condimentTimerOn) {
+            previousX = e.getX();
+            previousY = e.getY();
             double newRectX = e.getX() - orangeRect.getWidth()/2;
             double newRectY = e.getY() - orangeRect.getHeight()/2;
             orangeRect.setLocation((int)newRectX, (int)newRectY);
