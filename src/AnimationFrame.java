@@ -1,6 +1,4 @@
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 public class AnimationFrame extends JFrame {
 
@@ -16,6 +14,10 @@ public class AnimationFrame extends JFrame {
         // entirely in code, we must CHECK the "Custom Create" box for mainPanel in the Swing UI designer
         mainPanel = new AnimationPanel();
         setContentPane(mainPanel);
+//        JButton button = new JButton();
+//        mainPanel.add(button);
+//        button.setLocation(125,450);
+        //add(mainPanel);
 
         setTitle("Animation App");
         setSize(550, 500);

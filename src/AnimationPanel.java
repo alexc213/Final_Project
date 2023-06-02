@@ -33,9 +33,14 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     private double previousY;
     private String direction;
     private JLabel label;
+    private JButton order;
+    private JButton grill;
+    private JButton build;
 
     // constructor
     public AnimationPanel(){
+        JLabel background = new JLabel(new ImageIcon("src/orderRoom"));
+        add(background);
         // initialize variables
 
         isClickingOrangeRect = false;
@@ -71,6 +76,25 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         //label.setVisible(true);
 
         label.setSize(25,75);
+
+        order = new JButton(new ImageIcon("src/order.png"));
+        grill = new JButton(new ImageIcon("src/grill.png"));
+        build = new JButton(new ImageIcon("src/build.png"));
+
+        /*
+
+         */
+        add(order);
+        add(grill);
+        add(build);
+        order.setLocation(75,400);
+        grill.setLocation(225,400);
+        build.setLocation(475,400);
+
+        order.setSize(130,50);
+        grill.setSize(130,50);
+        build.setSize(130,50);
+        //order.setLocation(125,450);
 
     }
 
@@ -120,10 +144,13 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             //g2d.fillO
 
         if(condimentTimerOn){
-            Line line = new Line();
-            line.setPoint1Values((int)previousX,(int)(previousY+32.5));
-            line.setPoint2Values((int)(orangeRect.getX()+12.5),(int)(orangeRect.getY()+75));
-            stream.add(line);
+            if(previousY<=375){
+                Line line = new Line();
+                line.setPoint1Values((int)previousX,(int)(previousY+32.5));
+                line.setPoint2Values((int)(orangeRect.getX()+12.5),(int)(orangeRect.getY()+75));
+                stream.add(line);
+            }
+
         }
         for(Line line : stream){
             g2d.setStroke(new BasicStroke(5)); // change pen thickness
@@ -136,6 +163,15 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             line.setPoint1Values(line.getMinX(),line.getMinY()+5);
             line.setPoint2Values(line.getMinX(),line.getMinY()+5);
         }
+        //Rectangle rectangle = new Rectangle(0,400,400,175);
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0,400,550,5);
+        order.setLocation(25,415);
+        grill.setLocation(200,415);
+        build.setLocation(375,415);
+        order.setSize(125,45);
+        grill.setSize(125,45);
+        build.setSize(125,45);
 
     }
 
@@ -275,7 +311,10 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             previousY = e.getY();
             double newRectX = e.getX() - orangeRect.getWidth()/2;
             double newRectY = e.getY() - orangeRect.getHeight()/2;
-            orangeRect.setLocation((int)newRectX, (int)newRectY);
+            if(e.getY()<=375){
+                orangeRect.setLocation((int)newRectX, (int)newRectY);
+            }
+
             repaint();
         }
     }
@@ -287,7 +326,9 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             previousY = e.getY();
             double newRectX = e.getX() - orangeRect.getWidth()/2;
             double newRectY = e.getY() - orangeRect.getHeight()/2;
-            orangeRect.setLocation((int)newRectX, (int)newRectY);
+            if(e.getY()<=375){
+                orangeRect.setLocation((int)newRectX, (int)newRectY);
+            }
             //currentX = newRectX;
 
 //            Line line = new Line();
