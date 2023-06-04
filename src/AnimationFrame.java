@@ -13,6 +13,7 @@ public class AnimationFrame extends JFrame {
         // since AnimationPanel is a subclass of JPanel; since AnimationPanel is designed
         // entirely in code, we must CHECK the "Custom Create" box for mainPanel in the Swing UI designer
         mainPanel = new AnimationPanel();
+        //add(mainPanel);
         setContentPane(mainPanel);
 //        JButton button = new JButton();
 //        mainPanel.add(button);

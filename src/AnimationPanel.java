@@ -32,15 +32,20 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
     private double previousY;
     private String direction;
-    private JLabel label;
+    //private JLabel label;
     private JButton order;
     private JButton grill;
     private JButton build;
+    private Image background;
 
     // constructor
     public AnimationPanel(){
-        JLabel background = new JLabel(new ImageIcon("src/orderRoom"));
-        add(background);
+        //this.setFore
+
+        ImageIcon backgroundIcon = new ImageIcon("src/orderRoom.png");
+        Image backgroundImage = backgroundIcon.getImage();
+        backgroundIcon.setImage(backgroundImage.getScaledInstance(550,400,2));
+        background = backgroundIcon.getImage();
         // initialize variables
 
         isClickingOrangeRect = false;
@@ -64,18 +69,18 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         previousY = 0;
         direction = null;
 
-        label = new JLabel();
-        add(label);
+//        label = new JLabel();
+//        add(label);
 
-        ImageIcon icon = new ImageIcon("src/picture.png");
+        ImageIcon icon = new ImageIcon("src/ketchup.png");
         Image image = icon.getImage();
 
-        icon.setImage(image.getScaledInstance(25,75,1));
-        label.setBounds(orangeRect);
-        label.setIcon(icon);
+//        icon.setImage(image.getScaledInstance(25,75,1));
+//        label.setBounds(orangeRect);
+//        label.setIcon(icon);
         //label.setVisible(true);
 
-        label.setSize(25,75);
+        //label.setSize(25,75);
 
         order = new JButton(new ImageIcon("src/order.png"));
         grill = new JButton(new ImageIcon("src/grill.png"));
@@ -94,6 +99,10 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         order.setSize(130,50);
         grill.setSize(130,50);
         build.setSize(130,50);
+
+        order.addActionListener(this);
+        grill.addActionListener(this);
+        build.addActionListener(this);
         //order.setLocation(125,450);
 
     }
@@ -105,7 +114,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     public void paint(Graphics gp) {
         super.paint(gp); // must do this!
         Graphics2D g2d = (Graphics2D) gp; // cast gp to a 2D graphics object so we can do more advanced stuff
-
+        //background.setLocation(0,0);
         // draw blue message on screen
 //        g2d.setColor(Color.blue);
 //        Font myFont = new Font("Arial", BOLD, 14);
@@ -128,10 +137,15 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         g2d.setStroke(new BasicStroke(3)); // change pen thickness
         g2d.setColor(Color.orange);
         //g2d.draw(orangeRect);  // draw the orange rectangle
-        label.setLocation(orangeRect.x,orangeRect.y);
+        //label.paint(g2d);
+        //label.setLocation(orangeRect.x,orangeRect.y);
+        g2d.drawImage(background, 0,0,null);
+        ImageIcon icon = new ImageIcon("src/ketchup.png");
+
+        g2d.drawImage(icon.getImage(),orangeRect.x,orangeRect.y,null);
         //new ImageObserver;
 //        ImageObserver observer = null;
-//        g2d.drawImage("picture.png", 100, 100, observer);
+//        g2d.drawImage("ketchup.png", 100, 100, observer);
 
         //label.setBounds(100,100,100,100);
         //label.setBounds(orangeRect);
@@ -240,6 +254,25 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 condimentTimerOn = false;
                 orangeRect.setLocation(20,20);
                 //stream.clear();
+            }
+        }else if(e.getSource() instanceof JButton){
+            if(e.getSource() == order){
+                ImageIcon backgroundIcon = new ImageIcon("src/orderRoom.png");
+                Image backgroundImage = backgroundIcon.getImage();
+                backgroundIcon.setImage(backgroundImage.getScaledInstance(550,400,2));
+                background = backgroundIcon.getImage();
+            }else if(e.getSource() == grill){
+                ImageIcon backgroundIcon = new ImageIcon("src/grillRoom.png");
+                Image backgroundImage = backgroundIcon.getImage();
+                backgroundIcon.setImage(backgroundImage.getScaledInstance(550,400,2));
+                background = backgroundIcon.getImage();
+            }else if(e.getSource() == build){
+                ImageIcon backgroundIcon = new ImageIcon("src/buildRoom.png");
+                Image backgroundImage = backgroundIcon.getImage();
+                backgroundIcon.setImage(backgroundImage.getScaledInstance(550,400,2));
+                background = backgroundIcon.getImage();
+            }else{
+
             }
         }
 //        if (e.getSource() instanceof MouseEvent) {
