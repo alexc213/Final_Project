@@ -19,7 +19,7 @@ public class AnimationFrame extends JFrame {
 //        mainPanel.add(button);
 //        button.setLocation(125,450);
         //add(mainPanel);
-
+        setResizable(false);
         setTitle("Animation App");
         setSize(550, 500);
         setLocation(450, 100);

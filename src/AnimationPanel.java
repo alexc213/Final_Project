@@ -37,6 +37,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     private JButton grill;
     private JButton build;
     private Image background;
+    private Ticket ticket;
 
     // constructor
     public AnimationPanel(){
@@ -72,8 +73,8 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 //        label = new JLabel();
 //        add(label);
 
-        ImageIcon icon = new ImageIcon("src/ketchup.png");
-        Image image = icon.getImage();
+//        ImageIcon icon = new ImageIcon("src/ketchup.png");
+//        Image image = icon.getImage();
 
 //        icon.setImage(image.getScaledInstance(25,75,1));
 //        label.setBounds(orangeRect);
@@ -104,7 +105,8 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         grill.addActionListener(this);
         build.addActionListener(this);
         //order.setLocation(125,450);
-
+        ticket = new Ticket();
+//        add(ticket);
     }
 
     // important method that is inherited from JComponent and overridden;
@@ -114,6 +116,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     public void paint(Graphics gp) {
         super.paint(gp); // must do this!
         Graphics2D g2d = (Graphics2D) gp; // cast gp to a 2D graphics object so we can do more advanced stuff
+
         //background.setLocation(0,0);
         // draw blue message on screen
 //        g2d.setColor(Color.blue);
@@ -139,10 +142,36 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         //g2d.draw(orangeRect);  // draw the orange rectangle
         //label.paint(g2d);
         //label.setLocation(orangeRect.x,orangeRect.y);
+
         g2d.drawImage(background, 0,0,null);
         ImageIcon icon = new ImageIcon("src/ketchup.png");
 
         g2d.drawImage(icon.getImage(),orangeRect.x,orangeRect.y,null);
+
+//        g2d.setStroke(new BasicStroke(5));
+//        g2d.setColor(Color.gray);
+//        Line ticketLine = new Line();
+//        ticketLine.setPoint1Values(0,10);
+//        ticketLine.setPoint2Values(400,10);
+//        ticketLine.draw(g2d);
+
+
+//        Oval ticketHolder = new Oval();
+//        ticketHolder.setPoint1Values(400,-75);
+//        ticketHolder.setPoint2Values(575,75);
+        g2d.setColor(Color.BLACK);
+        g2d.fillOval(400,-75,175,150);
+        g2d.setColor(Color.DARK_GRAY);
+        g2d.fillOval(410,-75,155,140);
+        g2d.setColor(Color.GRAY);
+        g2d.fillOval(475,15,10,10);
+        g2d.drawLine(0,10,400,10);
+        g2d.drawString("Drag Ticket Here",435,35);
+
+        g2d.draw(ticket);
+
+
+        //ticketHolder.draw(g2d);
         //new ImageObserver;
 //        ImageObserver observer = null;
 //        g2d.drawImage("ketchup.png", 100, 100, observer);
@@ -186,7 +215,13 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         order.setSize(125,45);
         grill.setSize(125,45);
         build.setSize(125,45);
+        ticket.setLocation(250,250);
 
+    }
+    @Override
+    public void paintComponents(Graphics gd){
+        super.paintComponents(gd);
+        Graphics2D g2d = (Graphics2D)(gd);
     }
 
     // updates the x value for the string message by adding a small increment each time,
@@ -354,6 +389,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        System.out.println("" + e.getX() + e.getY());
         if(condimentTimerOn){
             previousX = e.getX();
             previousY = e.getY();
