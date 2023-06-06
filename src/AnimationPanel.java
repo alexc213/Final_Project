@@ -38,6 +38,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     private JButton build;
     private Image background;
     private Ticket ticket;
+    //private JLabel label;
 
     // constructor
     public AnimationPanel(){
@@ -45,7 +46,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
         ImageIcon backgroundIcon = new ImageIcon("src/orderRoom.png");
         Image backgroundImage = backgroundIcon.getImage();
-        backgroundIcon.setImage(backgroundImage.getScaledInstance(550,400,2));
+        backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
         background = backgroundIcon.getImage();
         // initialize variables
 
@@ -93,9 +94,9 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         add(order);
         add(grill);
         add(build);
-        order.setLocation(75,400);
-        grill.setLocation(225,400);
-        build.setLocation(475,400);
+        order.setLocation(75,650);
+        grill.setLocation(225,650);
+        build.setLocation(475,650);
 
         order.setSize(130,50);
         grill.setSize(130,50);
@@ -106,6 +107,10 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         build.addActionListener(this);
         //order.setLocation(125,450);
         ticket = new Ticket();
+
+//        label = new JLabel(new ImageIcon("src/ketchup.png"));
+//        add(label);
+//        label.addMouseMotionListener(this);
 //        add(ticket);
     }
 
@@ -160,15 +165,14 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 //        ticketHolder.setPoint1Values(400,-75);
 //        ticketHolder.setPoint2Values(575,75);
         g2d.setColor(Color.BLACK);
-        g2d.fillOval(400,-75,175,150);
+        g2d.fillOval(750,-125,300,250);
         g2d.setColor(Color.DARK_GRAY);
-        g2d.fillOval(410,-75,155,140);
-        g2d.setColor(Color.GRAY);
-        g2d.fillOval(475,15,10,10);
-        g2d.drawLine(0,10,400,10);
-        g2d.drawString("Drag Ticket Here",435,35);
+        g2d.fillOval(765,-125,275,230);
 
-        g2d.draw(ticket);
+        g2d.drawLine(0,10,750,10);
+        g2d.drawString("Drag Ticket Here",840,60);
+
+        //g2d.draw(ticket);
 
 
         //ticketHolder.draw(g2d);
@@ -185,6 +189,8 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 //        oval.setPoint2Values(250,250);
 //        oval.draw(g2d);
             //g2d.fillO
+//        label.setLocation(250,250);
+//        label.paint(g2d);
 
         if(condimentTimerOn){
             if(previousY<=375){
@@ -208,21 +214,28 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         }
         //Rectangle rectangle = new Rectangle(0,400,400,175);
         g2d.setColor(Color.BLACK);
-        g2d.fillRect(0,400,550,5);
-        order.setLocation(25,415);
-        grill.setLocation(200,415);
-        build.setLocation(375,415);
-        order.setSize(125,45);
-        grill.setSize(125,45);
-        build.setSize(125,45);
-        ticket.setLocation(250,250);
+        g2d.fillRect(0,600,1000,5);
+        order.setLocation(185,625);
+        grill.setLocation(435,625);
+        build.setLocation(685,625);
+        order.setSize(130,75);
+        grill.setSize(130,75);
+        build.setSize(130,75);
+        //ticket.setLocation(250,250);
 
+//        for(Rectangle rectangle : newTicket()){
+//            g2d.fillRect(rectangle.x,rectangle.y, rectangle.width, rectangle.height);
+//        }
+//        g2d.setColor(Color.GRAY);
+//        g2d.fillOval(880,25,10,10);
+
+        g2d.drawImage(ticket.getTicket(),ticket.getX(), ticket.getY(), null);
     }
-    @Override
-    public void paintComponents(Graphics gd){
-        super.paintComponents(gd);
-        Graphics2D g2d = (Graphics2D)(gd);
-    }
+    //@Override
+//    public void paintComponents(Graphics gd){
+//        super.paintComponents(gd);
+//        Graphics2D g2d = (Graphics2D)(gd);
+//    }
 
     // updates the x value for the string message by adding a small increment each time,
     // and resetting back to the left edge when it moves off the screen
@@ -294,17 +307,17 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             if(e.getSource() == order){
                 ImageIcon backgroundIcon = new ImageIcon("src/orderRoom.png");
                 Image backgroundImage = backgroundIcon.getImage();
-                backgroundIcon.setImage(backgroundImage.getScaledInstance(550,400,2));
+                backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
                 background = backgroundIcon.getImage();
             }else if(e.getSource() == grill){
                 ImageIcon backgroundIcon = new ImageIcon("src/grillRoom.png");
                 Image backgroundImage = backgroundIcon.getImage();
-                backgroundIcon.setImage(backgroundImage.getScaledInstance(550,400,2));
+                backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
                 background = backgroundIcon.getImage();
             }else if(e.getSource() == build){
                 ImageIcon backgroundIcon = new ImageIcon("src/buildRoom.png");
                 Image backgroundImage = backgroundIcon.getImage();
-                backgroundIcon.setImage(backgroundImage.getScaledInstance(550,400,2));
+                backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
                 background = backgroundIcon.getImage();
             }else{
 
@@ -379,23 +392,26 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             previousY = e.getY();
             double newRectX = e.getX() - orangeRect.getWidth()/2;
             double newRectY = e.getY() - orangeRect.getHeight()/2;
-            if(e.getY()<=375){
+            if(e.getY()<=550){
                 orangeRect.setLocation((int)newRectX, (int)newRectY);
             }
-
             repaint();
+        } else if(ticket.getRectangle().contains(e.getX(),e.getY())){
+            ticket.setLocation(e.getX(),e.getY());
         }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
         System.out.println("" + e.getX() + e.getY());
+
+        //label.setLocation(e.getX(),e.getY());
         if(condimentTimerOn){
             previousX = e.getX();
             previousY = e.getY();
             double newRectX = e.getX() - orangeRect.getWidth()/2;
             double newRectY = e.getY() - orangeRect.getHeight()/2;
-            if(e.getY()<=375){
+            if(e.getY()<=550){
                 orangeRect.setLocation((int)newRectX, (int)newRectY);
             }
             //currentX = newRectX;
@@ -406,5 +422,14 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 //            stream.add(line);
             repaint();
         }
+    }
+    public void newTicket(){
+//        ArrayList<Rectangle> rectangles = new ArrayList<>();
+//        Rectangle rectangle = new Rectangle();
+//        rectangle.setLocation(800,10);
+//        rectangle.setSize(165,50);
+//        rectangles.add(rectangle);
+//        return rectangles;
+
     }
 }

@@ -21,8 +21,8 @@ public class AnimationFrame extends JFrame {
         //add(mainPanel);
         setResizable(false);
         setTitle("Animation App");
-        setSize(550, 500);
-        setLocation(450, 100);
+        setSize(1000, 750);
+        setLocation(250, 50);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
     }
