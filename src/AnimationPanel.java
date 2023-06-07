@@ -38,6 +38,9 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     private JButton build;
     private Image background;
     private Ticket ticket;
+    private boolean holdingTicket;
+
+    //private boolean ticketHolderContainsTicket;
     //private JLabel label;
 
     // constructor
@@ -71,6 +74,8 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         previousY = 0;
         direction = null;
 
+        holdingTicket = false;
+        //ticketHolderContainsTicket = false;
 //        label = new JLabel();
 //        add(label);
 
@@ -107,6 +112,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         build.addActionListener(this);
         //order.setLocation(125,450);
         ticket = new Ticket();
+
 
 //        label = new JLabel(new ImageIcon("src/ketchup.png"));
 //        add(label);
@@ -230,6 +236,8 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 //        g2d.fillOval(880,25,10,10);
 
         g2d.drawImage(ticket.getTicket(),ticket.getX(), ticket.getY(), null);
+        g2d.setColor(Color.GRAY);
+        g2d.fillOval(870,20,15,15);
     }
     //@Override
 //    public void paintComponents(Graphics gd){
@@ -369,7 +377,37 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 previousY = e.getY();
                 condimentTimer.restart();
             }
+        }
 
+        if(holdingTicket){
+            if(e.getY()<=40){
+                if(e.getX() <= 700){
+                    ticket.shrink();
+                    ticket.setLocation(e.getX()-(ticket.getRectangle().width/2),10);
+                    //ticket.setRectangleSize(75,75);
+                    holdingTicket = false;
+                    ticket.setOnHolder(false);
+                } else{
+                    ticket.setLocation(790,10);
+                    ticket.reset();
+                    holdingTicket = false;
+                    ticket.setOnHolder(true);
+                }
+            } else if(!ticket.isOnHolder() && e.getX()>700){
+                ticket.setLocation(790,10);
+                ticket.reset();
+                ticket.setOnHolder(true);
+                holdingTicket = false;
+            } else {
+                if(ticket.isOnHolder()){
+                    ticket.setLocation(790,10);
+                    ticket.reset();
+                    holdingTicket = false;
+                } else{
+                    holdingTicket = false;
+                    ticket.setLocation(e.getX()-(ticket.getRectangle().width/2),10);
+                }
+            }
         }
 
     }
@@ -397,7 +435,9 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             }
             repaint();
         } else if(ticket.getRectangle().contains(e.getX(),e.getY())){
-            ticket.setLocation(e.getX(),e.getY());
+            ticket.setLocation(e.getX()-(ticket.getRectangle().width/2),e.getY()-(15));
+            holdingTicket = true;
+
         }
     }
 

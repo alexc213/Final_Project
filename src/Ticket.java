@@ -11,6 +11,7 @@ public class Ticket{
     private ArrayList<JPanel> order;
     private Rectangle rectangle;
     private Point location;
+    private boolean onHolder;
 
     public Ticket(){
        // setSize(100, 100);
@@ -27,6 +28,8 @@ public class Ticket{
         rectangle.setSize(175,390);
         rectangle.setLocation(790,10);
 
+        onHolder = true;
+
 
     }
 
@@ -41,6 +44,9 @@ public class Ticket{
     public int getY(){
         return location.y;
     }
+    public boolean isOnHolder(){
+        return onHolder;
+    }
 
     public Rectangle getRectangle(){
         return rectangle;
@@ -49,6 +55,31 @@ public class Ticket{
     public void setLocation(int x,int y){
         location.setLocation(x,y);
         rectangle.setLocation(x,y);
+//        if(x == 790 && y == 10){
+//            onHolder = true;
+//        }
+    }
+
+    public void setOnHolder(boolean newOnHolder){
+        onHolder = newOnHolder;
+    }
+
+//    public void setRectangleSize(int width, int height){
+//        rectangle.setSize(width, height);
+//    }
+
+    public void shrink(){
+        rectangle.setSize(50, 75);
+        ImageIcon icon = new ImageIcon("src/ticket.png");
+        //icon.setImage(icon.getImage().getScaledInstance());
+        ticket = icon.getImage().getScaledInstance(50,75,1);
+    }
+
+    public void reset(){
+        rectangle.setSize(175, 390);
+        ImageIcon icon = new ImageIcon("src/ticket.png");
+        //icon.setImage(icon.getImage().getScaledInstance());
+        ticket = icon.getImage().getScaledInstance(175,390,1);
     }
 
 //    @Override
