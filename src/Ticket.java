@@ -3,7 +3,8 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public class Ticket{
-    private static int ticketNumber = 0;
+    private static int totalTickets = 0;
+    private int ticketNumber;
     private Image ticket;
     private ArrayList<Image> order;
     private ArrayList<Point> orderLocation;
@@ -16,7 +17,11 @@ public class Ticket{
     private boolean shrunk;
 
     public Ticket(){
-        ticketNumber ++;
+        totalTickets ++;
+        //ticketNumber = totalTickets;
+        for(int i = 0;i<totalTickets;i++){
+            ticketNumber ++;
+        }
         orderName = new ArrayList<>();
         allOptions = new ArrayList<>();
         allOptions.add("cheese");
@@ -64,16 +69,18 @@ public class Ticket{
                 //order.add(icon.getImage());
                 order.add(icon.getImage().getScaledInstance(50,25,1));
             }
-            if(pattyCount == 2){
-                allOptions.remove(image);
+            if(pattyCount >= 2){
+                allOptions.remove(meatType);
+
             }
+            //System.out.println(allOptions);
             //order.add(image);
 
 
 
             //order.add(icon.getImage().getScaledInstance(25,25,1));
         }
-        System.out.println(order);
+        //System.out.println(pattyCount);
         //orderLocation = new ArrayList<>();
 
         ImageIcon icon = new ImageIcon("src/ticket.png");
@@ -111,6 +118,9 @@ public class Ticket{
     public int getY(){
         return location.y;
     }
+    public ArrayList<String> getOrderName(){
+        return orderName;
+    }
     public boolean isOnHolder(){
         return onHolder;
     }
@@ -121,6 +131,9 @@ public class Ticket{
 
     public ArrayList<Image> getOrder(){
         return order;
+    }
+    public int getTicketNumber(){
+        return ticketNumber;
     }
 
     public void setLocation(int x,int y){
@@ -148,10 +161,12 @@ public class Ticket{
         for(int i = 0;i<order.size();i++) {
             if(orderName.get(i).contains(meatType)){
                 icon = new ImageIcon(orderName.get(i));
-                order.set(i, icon.getImage()).getScaledInstance(50,50,1);
+                icon.setImage(icon.getImage().getScaledInstance(50,5,1));
+                order.set(i, icon.getImage());
             } else{
                 icon = new ImageIcon(orderName.get(i));
-                order.set(i, icon.getImage()).getScaledInstance(5,5,1);
+                icon.setImage(icon.getImage().getScaledInstance(10,5,1));
+                order.set(i, icon.getImage());
             }
 
         }
@@ -167,10 +182,12 @@ public class Ticket{
         for(int i = 0;i<order.size();i++) {
             if(orderName.get(i).contains(meatType)){
                 ImageIcon tempIcon = new ImageIcon(orderName.get(i));
-                order.set(i, tempIcon.getImage()).getScaledInstance(50,50,1);
+                tempIcon.setImage(tempIcon.getImage().getScaledInstance(175,35,1));
+                order.set(i, tempIcon.getImage());
             } else{
                 ImageIcon tempIcon = new ImageIcon(orderName.get(i));
-                order.set(i, tempIcon.getImage()).getScaledInstance(5,5,1);
+                tempIcon.setImage(tempIcon.getImage().getScaledInstance(50,25,1));
+                order.set(i, tempIcon.getImage());
             }
 
         }

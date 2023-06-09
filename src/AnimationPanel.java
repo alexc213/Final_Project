@@ -117,12 +117,12 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         //order.setLocation(125,450);
         ticket = new Ticket();
         allTickets.add(ticket);
-//        Ticket ticket2 = new Ticket();
-//        ticket2.setLocation(500,500);
-//        allTickets.add(ticket2);
-//        Ticket ticket3 = new Ticket();
-//        ticket3.setLocation(200,200);
-//        allTickets.add(ticket3);
+        Ticket ticket2 = new Ticket();
+        ticket2.setLocation(500,500);
+        allTickets.add(ticket2);
+        Ticket ticket3 = new Ticket();
+        ticket3.setLocation(200,200);
+        allTickets.add(ticket3);
 
 //        label = new JLabel(new ImageIcon("src/ketchup.png"));
 //        add(label);
@@ -245,7 +245,8 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 //        g2d.setColor(Color.GRAY);
 //        g2d.fillOval(880,25,10,10);
 
-        for(Ticket tempTicket : allTickets){
+        for(int j = 0;j<allTickets.size();j++){
+            Ticket tempTicket = allTickets.get(j);
             g2d.drawImage(tempTicket.getTicket(),tempTicket.getX(), tempTicket.getY(), null);
             int y;
             if(tempTicket.isShrunk()){
@@ -255,19 +256,36 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             }
             //System.out.println(tempTicket);
 
-            for(Image image : tempTicket.getOrder()) {
+            for(int i = 0;i<tempTicket.getOrder().size();i++) {
                 //ImageIcon tempIcon = new ImageIcon(image);
 //                Image image = tempIcon.getImage();
 //                Image tempImage = image.getScaledInstance(100,100,4);
                 //System.out.println(tempIcon.getImage().getScaledInstance(100,100,1));
+                Image image = tempTicket.getOrder().get(i);
                 if (tempTicket.isShrunk()) {
-                    g2d.drawImage(image, (int) (tempTicket.getX() + (tempTicket.getRectangle().getWidth() / 2) - 2.5), y, null);
-                    y -= 5;
+                    if(tempTicket.getOrderName().get(i).contains(tempTicket.getMeatType())){
+                        g2d.drawImage(image,tempTicket.getX(),y,null);
+                    } else{
+                        g2d.drawImage(image, (int) (tempTicket.getX() + (tempTicket.getRectangle().getWidth() / 2) - 2.5), y, null);
+                    }
+                    y -= 7;
                 } else {
-                    g2d.drawImage(image, (int) (tempTicket.getX() + (tempTicket.getRectangle().getWidth() / 2) - 12.5), y, null);
-                    y -= 40;
+                    if(tempTicket.getOrderName().get(i).contains(tempTicket.getMeatType())){
+                        g2d.drawImage(image,tempTicket.getX(),y-5,null);
+                    } else{
+                        g2d.drawImage(image, (int) (tempTicket.getX() + (tempTicket.getRectangle().getWidth() / 2) - 25), y, null);
+                    }
+                    y -= 35;
+                }
+                if(tempTicket.isShrunk()){
+                    g2d.setFont(new Font("Ariel",BOLD,8));
+                    g2d.drawString("" + (j+1), tempTicket.getX() + 3, tempTicket.getY()+13);
+                } else{
+                    g2d.setFont(new Font("Ariel",BOLD,25));
+                    g2d.drawString("" + (j+1), tempTicket.getX() + 3, tempTicket.getY()+60);
                 }
             }
+            //System.out.println();
         }
 
 
@@ -514,7 +532,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        System.out.println("" + e.getX() + e.getY());
+        //System.out.println("" + e.getX() + e.getY());
 
         //label.setLocation(e.getX(),e.getY());
         if(condimentTimerOn){
