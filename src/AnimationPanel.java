@@ -39,6 +39,8 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     private Image background;
     private Ticket ticket;
     private boolean holdingTicket;
+    private Ticket heldTicket;
+    private ArrayList<Ticket> allTickets;
 
     //private boolean ticketHolderContainsTicket;
     //private JLabel label;
@@ -46,7 +48,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     // constructor
     public AnimationPanel(){
         //this.setFore
-
+//        scaled = null;
         ImageIcon backgroundIcon = new ImageIcon("src/orderRoom.png");
         Image backgroundImage = backgroundIcon.getImage();
         backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
@@ -75,6 +77,8 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         direction = null;
 
         holdingTicket = false;
+        allTickets = new ArrayList<>();
+        heldTicket = null;
         //ticketHolderContainsTicket = false;
 //        label = new JLabel();
 //        add(label);
@@ -112,7 +116,13 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         build.addActionListener(this);
         //order.setLocation(125,450);
         ticket = new Ticket();
-
+        allTickets.add(ticket);
+//        Ticket ticket2 = new Ticket();
+//        ticket2.setLocation(500,500);
+//        allTickets.add(ticket2);
+//        Ticket ticket3 = new Ticket();
+//        ticket3.setLocation(200,200);
+//        allTickets.add(ticket3);
 
 //        label = new JLabel(new ImageIcon("src/ketchup.png"));
 //        add(label);
@@ -156,7 +166,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
         g2d.drawImage(background, 0,0,null);
         ImageIcon icon = new ImageIcon("src/ketchup.png");
-
+        icon.setImage(icon.getImage().getScaledInstance(100,100,1));
         g2d.drawImage(icon.getImage(),orangeRect.x,orangeRect.y,null);
 
 //        g2d.setStroke(new BasicStroke(5));
@@ -235,7 +245,32 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 //        g2d.setColor(Color.GRAY);
 //        g2d.fillOval(880,25,10,10);
 
-        g2d.drawImage(ticket.getTicket(),ticket.getX(), ticket.getY(), null);
+        for(Ticket tempTicket : allTickets){
+            g2d.drawImage(tempTicket.getTicket(),tempTicket.getX(), tempTicket.getY(), null);
+            int y;
+            if(tempTicket.isShrunk()){
+                y = (int)(tempTicket.getY()+(tempTicket.getRectangle().getHeight())-5);
+            } else{
+                y = (int)(tempTicket.getY()+(tempTicket.getRectangle().getHeight())-25);
+            }
+            //System.out.println(tempTicket);
+
+            for(Image image : tempTicket.getOrder()) {
+                //ImageIcon tempIcon = new ImageIcon(image);
+//                Image image = tempIcon.getImage();
+//                Image tempImage = image.getScaledInstance(100,100,4);
+                //System.out.println(tempIcon.getImage().getScaledInstance(100,100,1));
+                if (tempTicket.isShrunk()) {
+                    g2d.drawImage(image, (int) (tempTicket.getX() + (tempTicket.getRectangle().getWidth() / 2) - 2.5), y, null);
+                    y -= 5;
+                } else {
+                    g2d.drawImage(image, (int) (tempTicket.getX() + (tempTicket.getRectangle().getWidth() / 2) - 12.5), y, null);
+                    y -= 40;
+                }
+            }
+        }
+
+
         g2d.setColor(Color.GRAY);
         g2d.fillOval(870,20,15,15);
     }
@@ -381,33 +416,51 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
         if(holdingTicket){
             if(e.getY()<=40){
-                if(e.getX() <= 700){
+                if(e.getX() <= 700){//ticket line
                     ticket.shrink();
                     ticket.setLocation(e.getX()-(ticket.getRectangle().width/2),10);
                     //ticket.setRectangleSize(75,75);
-                    holdingTicket = false;
                     ticket.setOnHolder(false);
-                } else{
+                } else{//any other spot
+                    if(!ticket.isOnHolder()){
+                        for(Ticket tempTicket : allTickets){
+                            //System.out.println(tempTicket != ticket && tempTicket.isOnHolder());
+                            if(tempTicket != ticket && tempTicket.isOnHolder()){
+
+                                tempTicket.setLocation((int)(Math.random()*150) + 550,10);
+                                tempTicket.shrink();
+                                tempTicket.setOnHolder(false);
+                            }
+                        }
+                    }
                     ticket.setLocation(790,10);
                     ticket.reset();
-                    holdingTicket = false;
                     ticket.setOnHolder(true);
+
                 }
-            } else if(!ticket.isOnHolder() && e.getX()>700){
+            } else if(!ticket.isOnHolder() && e.getX()>700){//holder
+                for(Ticket tempTicket : allTickets){
+                    //System.out.println(tempTicket != ticket && tempTicket.isOnHolder());
+                    if(tempTicket != ticket && tempTicket.isOnHolder()){
+
+                        tempTicket.setLocation((int)(Math.random()*10) + 600,10);
+                        tempTicket.shrink();
+                        tempTicket.setOnHolder(false);
+                    }
+                }
                 ticket.setLocation(790,10);
                 ticket.reset();
                 ticket.setOnHolder(true);
-                holdingTicket = false;
             } else {
-                if(ticket.isOnHolder()){
+                if(ticket.isOnHolder()){//reset to holder
                     ticket.setLocation(790,10);
                     ticket.reset();
-                    holdingTicket = false;
-                } else{
-                    holdingTicket = false;
+                } else{//reset to line
                     ticket.setLocation(e.getX()-(ticket.getRectangle().width/2),10);
                 }
             }
+            holdingTicket = false;
+            heldTicket = null;
         }
 
     }
@@ -434,9 +487,27 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 orangeRect.setLocation((int)newRectX, (int)newRectY);
             }
             repaint();
-        } else if(ticket.getRectangle().contains(e.getX(),e.getY())){
-            ticket.setLocation(e.getX()-(ticket.getRectangle().width/2),e.getY()-(15));
-            holdingTicket = true;
+        } else {
+            if(!holdingTicket){
+                for(Ticket tempTicket : allTickets){
+                    if(tempTicket.getRectangle().contains(e.getX(),e.getY())){
+                        ticket = tempTicket;
+                        heldTicket = tempTicket;
+                        tempTicket.setLocation(e.getX()-(tempTicket.getRectangle().width/2),e.getY()-(15));
+                        holdingTicket = true;
+                        break;
+                    }
+                }
+            } else{
+                ticket = heldTicket;
+                heldTicket.setLocation(e.getX()-(heldTicket.getRectangle().width/2),e.getY()-(15));
+                holdingTicket = true;
+            }
+
+
+
+            //if(ticket.getRectangle().contains(e.getX(),e.getY()))
+
 
         }
     }
