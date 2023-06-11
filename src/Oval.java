@@ -4,7 +4,7 @@ import java.awt.Graphics;
  * Class Oval:  inherits from Shape and handles oval shapes
  * @author Barb Ericson
  */
-public class Oval extends Shape {
+public class Oval extends CustomShape {
   /** Constructor */
   public Oval() {
     super();  // call parent constructor (note the parent's constructor has no parameters)

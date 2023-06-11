@@ -6,7 +6,7 @@ import java.awt.Point;
  * Class Shape:  class for shapes that can be represented with 2 points
  * @author Barb Ericson
  */
-public class Shape {
+public class CustomShape {
   // public constants
   public static final String RECTANGLE = "Rectangle"; // constant for rectangle
   public static final String OVAL = "Oval";           // constant for oval
@@ -19,7 +19,7 @@ public class Shape {
   private Point p2; // second point; a Point object has an x and y attribute, e.g. p2.x and p2.y
 
   /** Constructor */
-  public Shape() {
+  public CustomShape() {
     color = Color.black;
     p1 = new Point();
     p2 = new Point();

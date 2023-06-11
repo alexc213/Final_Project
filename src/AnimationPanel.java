@@ -37,10 +37,19 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     private JButton grill;
     private JButton build;
     private Image background;
+    private String backgroundName;
     private Ticket ticket;
     private boolean holdingTicket;
     private Ticket heldTicket;
     private ArrayList<Ticket> allTickets;
+    private Timer customerTimer;
+    private ArrayList<Customer> allCustomers;
+    private ArrayList<Customer> orderedCustomers;
+    private JButton orderButton;
+    private Patty[][] stove;
+    private Point meatLocation;
+
+    private boolean holdingMeat;
 
     //private boolean ticketHolderContainsTicket;
     //private JLabel label;
@@ -53,12 +62,19 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         Image backgroundImage = backgroundIcon.getImage();
         backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
         background = backgroundIcon.getImage();
+        backgroundName = "order";
         // initialize variables
 
         isClickingOrangeRect = false;
         // initialize Timer object, responsible for the animation
         timer = new Timer(10, this); // set timer to have 10ms pulses; each pulse triggers an ActionEvent
         timer.start();
+        customerTimer = new Timer((int)(Math.random()*30000)+30000,this);
+        customerTimer.start();
+        allCustomers = new ArrayList<>();
+        Customer customer = new Customer();
+        allCustomers.add(customer);
+        orderedCustomers = new ArrayList<>();
 
         // initialize and set initial positions of red enemy rectangle and orange rectangle
         orangeRect = new Rectangle(25, 75); // create 70x30 user-movable orange rectangle
@@ -79,6 +95,17 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         holdingTicket = false;
         allTickets = new ArrayList<>();
         heldTicket = null;
+
+        holdingMeat = false;
+        stove = new Patty[4][3];
+        meatLocation = null;
+
+        orderButton = new JButton(new ImageIcon("src/orderButton.png"));
+        add(orderButton);
+        orderButton.setLocation(900,650);
+        orderButton.setSize(50,50);
+        orderButton.addActionListener(this);
+        orderButton.setVisible(false);
         //ticketHolderContainsTicket = false;
 //        label = new JLabel();
 //        add(label);
@@ -116,13 +143,13 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         build.addActionListener(this);
         //order.setLocation(125,450);
         ticket = new Ticket();
-        allTickets.add(ticket);
-        Ticket ticket2 = new Ticket();
-        ticket2.setLocation(500,500);
-        allTickets.add(ticket2);
-        Ticket ticket3 = new Ticket();
-        ticket3.setLocation(200,200);
-        allTickets.add(ticket3);
+//        allTickets.add(ticket);
+//        Ticket ticket2 = new Ticket();
+//        ticket2.setLocation(500,500);
+//        allTickets.add(ticket2);
+//        Ticket ticket3 = new Ticket();
+//        ticket3.setLocation(200,200);
+//        allTickets.add(ticket3);
 
 //        label = new JLabel(new ImageIcon("src/ketchup.png"));
 //        add(label);
@@ -244,6 +271,69 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 //        }
 //        g2d.setColor(Color.GRAY);
 //        g2d.fillOval(880,25,10,10);
+//        System.out.println(temp.getCustomer());
+//        for(int i = 0;i<temp.getCustomer().size();i++){
+//            System.out.println(temp.getCustomer().get(i));
+//            temp.getCustomer().get(i).draw(g2d);
+//        }
+        orderButton.setLocation(225,200);
+        for(int i = 0;i<allCustomers.size();i++){
+            Customer customer = allCustomers.get(i);
+            if(backgroundName.equals("order")) {
+                g2d.drawImage(customer.getCustomer(), customer.getX(), customer.getY(), null);
+            }
+            if(customer.getX() > i*100+200){
+                customer.setX(customer.getX()-5);
+            } else if(customer.getX()<=200){
+                if(backgroundName.equals("order")){
+                    g2d.drawImage(new ImageIcon("src/orderButton.png").getImage(),235,200,null);
+                    orderButton.setVisible(true);
+                } else{
+                    orderButton.setVisible(false);
+                }
+                orderButton.setLocation(225,200);
+            }
+        }
+        for(int i = 0;i<orderedCustomers.size();i++){
+            Customer customer = orderedCustomers.get(i);
+            if(backgroundName.equals("order")) {
+                g2d.drawImage(customer.getCustomer(), customer.getX(), customer.getY(), null);
+            }
+            if(customer.isLeaving()){
+                if(customer.getX()>=1000 && !customer.isGotFood()){
+                    customer.setLeaving(false);
+                    customer.setY(customer.getY()-60);
+                } else{
+                    customer.setX(customer.getX() + 5);
+                }
+            } else{
+                if(customer.getX() > i*100+300) {
+                    customer.setX(customer.getX() - 5);
+                }
+            }
+        }
+
+        if(backgroundName.equals("grill")){
+            ImageIcon meatStack = new ImageIcon("src/meatStack.png");
+            meatStack.setImage(meatStack.getImage().getScaledInstance(175,150,1));
+            g2d.drawImage(meatStack.getImage(),15,425,null);
+            ImageIcon patty = new ImageIcon("src/rawPatty.png");
+            patty.setImage(patty.getImage().getScaledInstance(160,80,1));
+            if(holdingMeat){
+                g2d.drawImage(patty.getImage(),(int)meatLocation.getX()-80,(int)meatLocation.getY()-40,null);
+            }
+            for(Patty[] row : stove){
+                for(Patty tempPatty : row){
+                    if(tempPatty != null){
+                        g2d.drawImage(patty.getImage(),tempPatty.getX()-80, tempPatty.getY()-40,null);
+                        tempPatty.getBorder().draw(g2d);
+                    }
+                }
+
+            }
+        }
+
+
 
         for(int j = 0;j<allTickets.size();j++){
             Ticket tempTicket = allTickets.get(j);
@@ -363,24 +453,49 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 condimentTimerOn = false;
                 orangeRect.setLocation(20,20);
                 //stream.clear();
+            } else if(e.getSource() == customerTimer){
+                Customer customer = new Customer();
+                allCustomers.add(customer);
+                customerTimer.setDelay((int)(Math.random()*30000)+30000);
+                customerTimer.stop();
+                customerTimer.start();
             }
         }else if(e.getSource() instanceof JButton){
             if(e.getSource() == order){
                 ImageIcon backgroundIcon = new ImageIcon("src/orderRoom.png");
                 Image backgroundImage = backgroundIcon.getImage();
                 backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
+                backgroundName = "order";
                 background = backgroundIcon.getImage();
             }else if(e.getSource() == grill){
                 ImageIcon backgroundIcon = new ImageIcon("src/grillRoom.png");
                 Image backgroundImage = backgroundIcon.getImage();
                 backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
+                backgroundName = "grill";
                 background = backgroundIcon.getImage();
             }else if(e.getSource() == build){
                 ImageIcon backgroundIcon = new ImageIcon("src/buildRoom.png");
                 Image backgroundImage = backgroundIcon.getImage();
                 backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
+                backgroundName = "build";
                 background = backgroundIcon.getImage();
-            }else{
+            }else if(e.getSource() == orderButton){
+                Ticket ticket = new Ticket();
+                allTickets.add(ticket);
+                for(Ticket tempTicket : allTickets){
+                    //System.out.println(tempTicket != ticket && tempTicket.isOnHolder());
+                    if(tempTicket != ticket && tempTicket.isOnHolder()){
+                        tempTicket.setLocation((int)(Math.random()*150) + 550,10);
+                        tempTicket.shrink();
+                        tempTicket.setOnHolder(false);
+                    }
+                }
+                allCustomers.get(0).setOrdered(true);
+                allCustomers.get(0).setLeaving(true);
+                allCustomers.get(0).setY(allCustomers.get(0).getY()-60);
+                //customer.setY(customer.getY()-120);
+                orderedCustomers.add(allCustomers.remove(0));
+                orderButton.setVisible(false);
 
             }
         }
@@ -444,7 +559,6 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                         for(Ticket tempTicket : allTickets){
                             //System.out.println(tempTicket != ticket && tempTicket.isOnHolder());
                             if(tempTicket != ticket && tempTicket.isOnHolder()){
-
                                 tempTicket.setLocation((int)(Math.random()*150) + 550,10);
                                 tempTicket.shrink();
                                 tempTicket.setOnHolder(false);
@@ -461,7 +575,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                     //System.out.println(tempTicket != ticket && tempTicket.isOnHolder());
                     if(tempTicket != ticket && tempTicket.isOnHolder()){
 
-                        tempTicket.setLocation((int)(Math.random()*10) + 600,10);
+                        tempTicket.setLocation((int)(Math.random()*150) + 550,10);
                         tempTicket.shrink();
                         tempTicket.setOnHolder(false);
                     }
@@ -480,6 +594,82 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             holdingTicket = false;
             heldTicket = null;
         }
+
+        if(holdingMeat){
+            holdingMeat = false;
+            int x = e.getX();
+            int y = e.getY();
+            if(y>=485){
+                if(x>=565){
+                    Patty patty = new Patty(670,540);
+                    if(stove[3][2] == null){
+                        stove[3][2] = patty;
+                    }
+                } else if(x>=380){
+                    Patty patty = new Patty(475,540);
+                    if(stove[3][1] == null){
+                        stove[3][1] = patty;
+                    }
+                } else if(x>=195){
+                    Patty patty = new Patty(280,540);
+                    if(stove[3][0] == null){
+                        stove[3][0] = patty;
+                    }
+                }
+            } else if(y>=370){
+                if(x>=565){
+                    Patty patty = new Patty(670,425);
+                    if(stove[2][2] == null){
+                        stove[2][2] = patty;
+                    }
+                } else if(x>=380){
+                    Patty patty = new Patty(475,425);
+                    if(stove[2][1] == null){
+                        stove[2][1] = patty;
+                    }
+                } else if(x>=195){
+                    Patty patty = new Patty(280,425);
+                    if(stove[2][0] == null){
+                        stove[2][0] = patty;
+                    }
+                }
+            } else if(y>=255){
+                if(x>=565){
+                    Patty patty = new Patty(670,310);
+                    if(stove[1][2] == null){
+                        stove[1][2] = patty;
+                    }
+                } else if(x>=380){
+                    Patty patty = new Patty(475,310);
+                    if(stove[1][1] == null){
+                        stove[1][1] = patty;
+                    }
+                } else if(x>=195){
+                    Patty patty = new Patty(280,310);
+                    if(stove[1][0] == null){
+                        stove[1][0] = patty;
+                    }
+                }
+            } else if(y>=140){
+                if(x>=565){
+                    Patty patty = new Patty(670,195);
+                    if(stove[0][2] == null){
+                        stove[0][2] = patty;
+                    }
+                } else if(x>=380){
+                    Patty patty = new Patty(475,195);
+                    if(stove[0][1] == null){
+                        stove[0][1] = patty;
+                    }
+                } else if(x>=195){
+                    Patty patty = new Patty(280,195);
+                    if(stove[0][0] == null){
+                        stove[0][0] = patty;
+                    }
+                }
+            }
+        }
+
 
     }
     @Override
@@ -521,18 +711,21 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 heldTicket.setLocation(e.getX()-(heldTicket.getRectangle().width/2),e.getY()-(15));
                 holdingTicket = true;
             }
+        }
+        if(backgroundName.equals("grill") && e.getX()>=15 && e.getX()<=190 && e.getY()>=425 && e.getY()<=575){
+            holdingMeat = true;
 
-
-
-            //if(ticket.getRectangle().contains(e.getX(),e.getY()))
-
-
+//            previousX = e.getX();
+//            previousY = e.getY();
+        }
+        if(holdingMeat){
+            meatLocation = new Point(e.getX(),e.getY());
         }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        //System.out.println("" + e.getX() + e.getY());
+        System.out.println("" + e.getX() + e.getY());
 
         //label.setLocation(e.getX(),e.getY());
         if(condimentTimerOn){
@@ -552,13 +745,13 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             repaint();
         }
     }
-    public void newTicket(){
-//        ArrayList<Rectangle> rectangles = new ArrayList<>();
-//        Rectangle rectangle = new Rectangle();
-//        rectangle.setLocation(800,10);
-//        rectangle.setSize(165,50);
-//        rectangles.add(rectangle);
-//        return rectangles;
-
-    }
+//    public ArrayList<Shape> newCustomer(){
+//        Customer customer = new ArrayList<Spa>();
+//        Oval head = new Oval();
+//        head.setPoint1Values(500,300);
+//        head.setPoint2Values(600,400);
+//        customer.add(head);
+//
+//
+//    }
 }

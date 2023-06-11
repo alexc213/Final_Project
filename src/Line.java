@@ -1,6 +1,6 @@
 import java.awt.Graphics;
 
-public class Line extends Shape {
+public class Line extends CustomShape {
     public Line() {
         super();
     }
