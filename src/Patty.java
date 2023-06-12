@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class Patty  implements ActionListener {
     private int x;
@@ -10,6 +11,7 @@ public class Patty  implements ActionListener {
     private Timer timer;
     private int topTime;
     private int bottomTime;
+    private ArrayList<Image> patty;
     private boolean isTop;
     public Patty(int x, int y){
         this.x = x;
@@ -21,6 +23,7 @@ public class Patty  implements ActionListener {
 //        border.setPoint2Values(x+75,y+30);
         timer = new Timer(10,this);
         isTop = false;
+        patty = new ArrayList<>(3);
     }
     public void startTimer(){
         timer.start();
@@ -51,6 +54,10 @@ public class Patty  implements ActionListener {
         return border;
     }
 
+    public ArrayList<Image> getPatty() {
+        return patty;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() instanceof Timer){
@@ -58,6 +65,15 @@ public class Patty  implements ActionListener {
                 topTime += 10;
             } else{
                 bottomTime += 10;
+            }
+            if(topTime != 0){
+                ImageIcon icon = new ImageIcon("src/marks.png");
+                icon.setImage(icon.getImage().getScaledInstance(140,30,1));
+                patty.set(1, icon.getImage());
+            } else if(topTime >=2000){
+                ImageIcon icon = new ImageIcon("src/marks.png");
+                icon.setImage(icon.getImage().getScaledInstance(140,30,1));
+                patty.set(1, icon.getImage());
             }
         }
     }

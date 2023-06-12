@@ -332,13 +332,24 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             for(Patty[] row : stove){
                 for(Patty tempPatty : row){
                     if(tempPatty != null){
-                        g2d.drawImage(patty.getImage(),tempPatty.getX()-80, tempPatty.getY()-40,null);
-                        g2d.drawRect(tempPatty.getBorder().x,tempPatty.getBorder().y,tempPatty.getBorder().width,tempPatty.getBorder().height);
+                        int y = -40;
+                        for(Image image : tempPatty.getPatty() ){
+                            g2d.drawImage(image,tempPatty.getX()-80, tempPatty.getY()+y,null);
+                            g2d.drawRect(tempPatty.getBorder().x,tempPatty.getBorder().y,tempPatty.getBorder().width,tempPatty.getBorder().height);
+                            y+=20;
+                        }
+
 
                     }
                 }
 
             }
+        }
+
+        if(backgroundName.equals("build")){
+            ImageIcon a = new ImageIcon("src/buildOptions.png");
+            //a.setImage(a.getImage().getScaledInstance(200,325,1));
+            g2d.drawImage(a.getImage(),0,130,null);
         }
 
 
@@ -925,19 +936,19 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 }
 
             }
-//            Rectangle rectangle = new Rectangle();
-//            rectangle.contains()
-//            previousX = e.getX();
-//            previousY = e.getY();
         }
         if(holdingMeat){
             meatLocation = new Point(e.getX(),e.getY());
+        }
+
+        if(backgroundName.equals("build")){
+
         }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        //System.out.println("" + e.getX() + e.getY());
+        System.out.println("" + e.getX() + e.getY());
 
         //label.setLocation(e.getX(),e.getY());
         if(condimentTimerOn){
