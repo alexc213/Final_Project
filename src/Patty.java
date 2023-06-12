@@ -1,11 +1,12 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Patty  implements ActionListener {
     private int x;
     private int y;
-    private Oval border;
+    private Rectangle border;
     private Timer timer;
     private int topTime;
     private int bottomTime;
@@ -13,9 +14,11 @@ public class Patty  implements ActionListener {
     public Patty(int x, int y){
         this.x = x;
         this.y = y;
-        border = new Oval();
-        border.setPoint1Values(x-75,y-30);
-        border.setPoint2Values(x+75,y+30);
+        border = new Rectangle();
+        border.setSize(150,60);
+        border.setLocation(x-75,y-30);
+//        border.setPoint1Values(x-75,y-30);
+//        border.setPoint2Values(x+75,y+30);
         timer = new Timer(10,this);
         isTop = false;
     }
@@ -28,10 +31,12 @@ public class Patty  implements ActionListener {
 
     public void setX(int x) {
         this.x = x;
+        border.setLocation(x-75,y-30);
     }
 
     public void setY(int y) {
         this.y = y;
+        border.setLocation(x-75,y-30);
     }
 
     public int getX() {
@@ -42,7 +47,7 @@ public class Patty  implements ActionListener {
         return y;
     }
 
-    public Oval getBorder() {
+    public Rectangle getBorder() {
         return border;
     }
 

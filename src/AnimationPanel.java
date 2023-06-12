@@ -48,8 +48,11 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     private JButton orderButton;
     private Patty[][] stove;
     private Point meatLocation;
-
+    private Patty pattyHeld;
+    private ArrayList<Patty> allPatties;
     private boolean holdingMeat;
+    private int previousRow;
+    private int previousColumn;
 
     //private boolean ticketHolderContainsTicket;
     //private JLabel label;
@@ -99,6 +102,10 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         holdingMeat = false;
         stove = new Patty[4][3];
         meatLocation = null;
+        pattyHeld = null;
+        allPatties = new ArrayList<>();
+        previousRow = -1;
+        previousColumn = -1;
 
         orderButton = new JButton(new ImageIcon("src/orderButton.png"));
         add(orderButton);
@@ -326,7 +333,8 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 for(Patty tempPatty : row){
                     if(tempPatty != null){
                         g2d.drawImage(patty.getImage(),tempPatty.getX()-80, tempPatty.getY()-40,null);
-                        tempPatty.getBorder().draw(g2d);
+                        g2d.drawRect(tempPatty.getBorder().x,tempPatty.getBorder().y,tempPatty.getBorder().width,tempPatty.getBorder().height);
+
                     }
                 }
 
@@ -377,6 +385,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             }
             //System.out.println();
         }
+        g2d.fillArc(500,500,100,100,90,-90);
 
 
         g2d.setColor(Color.GRAY);
@@ -599,81 +608,262 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             holdingMeat = false;
             int x = e.getX();
             int y = e.getY();
+
+            Patty patty;
             if(y>=485){
                 if(x>=565){
-                    Patty patty = new Patty(670,540);
                     if(stove[3][2] == null){
-                        stove[3][2] = patty;
+                        if(pattyHeld != null){
+                            stove[3][2] = pattyHeld;
+                            pattyHeld.setX(670);
+                            pattyHeld.setY(540);
+                        } else{
+                            patty = new Patty(670,540);
+                            stove[3][2] = patty;
+                            allPatties.add(patty);
+                        }
+                    } else{
+                        stove[previousRow][previousColumn] = pattyHeld;
                     }
                 } else if(x>=380){
-                    Patty patty = new Patty(475,540);
+//                    patty = new Patty(475,540);
+//                    if(stove[3][1] == null){
+//                        stove[3][1] = patty;
+//                        allPatties.add(patty);
+//                    }
                     if(stove[3][1] == null){
-                        stove[3][1] = patty;
+                        if(pattyHeld != null){
+                            stove[3][1] = pattyHeld;
+                            pattyHeld.setX(475);
+                            pattyHeld.setY(540);
+                        } else{
+                            patty = new Patty(475,540);
+                            stove[3][1] = patty;
+                            allPatties.add(patty);
+                        }
+                    } else{
+                        stove[previousRow][previousColumn] = pattyHeld;
                     }
                 } else if(x>=195){
-                    Patty patty = new Patty(280,540);
+//                    patty = new Patty(280,540);
+//                    if(stove[3][0] == null){
+//                        stove[3][0] = patty;
+//                        allPatties.add(patty);
+//                    }
                     if(stove[3][0] == null){
-                        stove[3][0] = patty;
+                        if(pattyHeld != null){
+                            stove[3][0] = pattyHeld;
+                            pattyHeld.setX(280);
+                            pattyHeld.setY(540);
+                        } else{
+                            patty = new Patty(280,540);
+                            stove[3][0] = patty;
+                            allPatties.add(patty);
+                        }
+                    } else{
+                        stove[previousRow][previousColumn] = pattyHeld;
                     }
                 }
             } else if(y>=370){
                 if(x>=565){
-                    Patty patty = new Patty(670,425);
+//                    patty = new Patty(670,425);
+//                    if(stove[2][2] == null){
+//                        stove[2][2] = patty;
+//                        allPatties.add(patty);
+//                    }
                     if(stove[2][2] == null){
-                        stove[2][2] = patty;
+                        if(pattyHeld != null){
+                            stove[2][2] = pattyHeld;
+                            pattyHeld.setX(670);
+                            pattyHeld.setY(425);
+                        } else{
+                            patty = new Patty(670,425);
+                            stove[2][2] = patty;
+                            allPatties.add(patty);
+                        }
+                    } else{
+                        stove[previousRow][previousColumn] = pattyHeld;
                     }
                 } else if(x>=380){
-                    Patty patty = new Patty(475,425);
+//                    patty = new Patty(475,425);
+//                    if(stove[2][1] == null){
+//                        stove[2][1] = patty;
+//                        allPatties.add(patty);
+//                    }
                     if(stove[2][1] == null){
-                        stove[2][1] = patty;
+                        if(pattyHeld != null){
+                            stove[2][1] = pattyHeld;
+                            pattyHeld.setX(475);
+                            pattyHeld.setY(425);
+                        } else{
+                            patty = new Patty(475,425);
+                            stove[2][1] = patty;
+                            allPatties.add(patty);
+                        }
+                    } else{
+                        stove[previousRow][previousColumn] = pattyHeld;
                     }
                 } else if(x>=195){
-                    Patty patty = new Patty(280,425);
+//                    patty = new Patty(280,425);
+//                    if(stove[2][0] == null){
+//                        stove[2][0] = patty;
+//                        allPatties.add(patty);
+//                    }
                     if(stove[2][0] == null){
-                        stove[2][0] = patty;
+                        if(pattyHeld != null){
+                            stove[2][0] = pattyHeld;
+                            pattyHeld.setX(280);
+                            pattyHeld.setY(425);
+                        } else{
+                            patty = new Patty(280,425);
+                            stove[2][0] = patty;
+                            allPatties.add(patty);
+                        }
+                    } else{
+                        stove[previousRow][previousColumn] = pattyHeld;
                     }
                 }
             } else if(y>=255){
                 if(x>=565){
-                    Patty patty = new Patty(670,310);
+//                    patty = new Patty(670,310);
+//                    if(stove[1][2] == null){
+//                        stove[1][2] = patty;
+//                        allPatties.add(patty);
+//                    }
                     if(stove[1][2] == null){
-                        stove[1][2] = patty;
+                        if(pattyHeld != null){
+                            stove[1][2] = pattyHeld;
+                            pattyHeld.setX(670);
+                            pattyHeld.setY(310);
+                        } else{
+                            patty = new Patty(670,310);
+                            stove[1][2] = patty;
+                            allPatties.add(patty);
+                        }
+                    } else{
+                        stove[previousRow][previousColumn] = pattyHeld;
                     }
                 } else if(x>=380){
-                    Patty patty = new Patty(475,310);
+//                    patty = new Patty(475,310);
+//                    if(stove[1][1] == null){
+//                        stove[1][1] = patty;
+//                        allPatties.add(patty);
+//                    }
                     if(stove[1][1] == null){
-                        stove[1][1] = patty;
+                        if(pattyHeld != null){
+                            stove[1][1] = pattyHeld;
+                            pattyHeld.setX(475);
+                            pattyHeld.setY(310);
+                        } else{
+                            patty = new Patty(475,310);
+                            stove[1][1] = patty;
+                            allPatties.add(patty);
+                        }
+                    } else{
+                        stove[previousRow][previousColumn] = pattyHeld;
                     }
                 } else if(x>=195){
-                    Patty patty = new Patty(280,310);
+//                    patty = new Patty(280,310);
+//                    if(stove[1][0] == null){
+//                        stove[1][0] = patty;
+//                        allPatties.add(patty);
+//                    }
                     if(stove[1][0] == null){
-                        stove[1][0] = patty;
+                        if(pattyHeld != null){
+                            stove[1][0] = pattyHeld;
+                            pattyHeld.setX(280);
+                            pattyHeld.setY(310);
+                        } else{
+                            patty = new Patty(280,310);
+                            stove[1][0] = patty;
+                            allPatties.add(patty);
+                        }
+                    } else{
+                        stove[previousRow][previousColumn] = pattyHeld;
                     }
                 }
             } else if(y>=140){
                 if(x>=565){
-                    Patty patty = new Patty(670,195);
+//                    patty = new Patty(670,195);
+//                    if(stove[0][2] == null){
+//                        stove[0][2] = patty;
+//                        allPatties.add(patty);
+//                    }
                     if(stove[0][2] == null){
-                        stove[0][2] = patty;
+                        if(pattyHeld != null){
+                            stove[0][2] = pattyHeld;
+                            pattyHeld.setX(670);
+                            pattyHeld.setY(195);
+                        } else{
+                            patty = new Patty(670,195);
+                            stove[0][2] = patty;
+                            allPatties.add(patty);
+                        }
+                    } else{
+                        stove[previousRow][previousColumn] = pattyHeld;
                     }
                 } else if(x>=380){
-                    Patty patty = new Patty(475,195);
+//                    patty = new Patty(475,195);
+//                    if(stove[0][1] == null){
+//                        stove[0][1] = patty;
+//                        allPatties.add(patty);
+//                    }
                     if(stove[0][1] == null){
-                        stove[0][1] = patty;
+                        if(pattyHeld != null){
+                            stove[0][1] = pattyHeld;
+                            pattyHeld.setX(475);
+                            pattyHeld.setY(195);
+                        } else{
+                            patty = new Patty(475,195);
+                            stove[0][1] = patty;
+                            allPatties.add(patty);
+                        }
+                    } else{
+                        stove[previousRow][previousColumn] = pattyHeld;
                     }
                 } else if(x>=195){
-                    Patty patty = new Patty(280,195);
+//                    patty = new Patty(280,195);
+//                    if(stove[0][0] == null){
+//                        stove[0][0] = patty;
+//                        allPatties.add(patty);
+//                    }
                     if(stove[0][0] == null){
-                        stove[0][0] = patty;
+                        if(pattyHeld != null){
+                            stove[0][0] = pattyHeld;
+                            pattyHeld.setX(280);
+                            pattyHeld.setY(195);
+                        } else{
+                            patty = new Patty(280,195);
+                            stove[0][0] = patty;
+                            allPatties.add(patty);
+                        }
+                    } else{
+                        stove[previousRow][previousColumn] = pattyHeld;
                     }
                 }
             }
+//            if(patty != null && pattyHeld == null){
+//                allPatties.add(patty);
+//            }
+            pattyHeld = null;
+            previousRow = -1;
+            previousY = -1;
         }
 
 
     }
     @Override
-    public void mouseClicked(MouseEvent e) { } // unused but needed for interface
+    public void mouseClicked(MouseEvent e) {
+        for(Patty patty : allPatties){
+            System.out.println(patty);
+        }
+        for(Patty[] row : stove){
+            for(Patty patty : row){
+                System.out.print(patty);
+            }
+            System.out.println();
+        }
+    } // unused but needed for interface
 
     @Override
     public void mouseEntered(MouseEvent e) { } // unused but needed for interface
@@ -712,9 +902,31 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 holdingTicket = true;
             }
         }
-        if(backgroundName.equals("grill") && e.getX()>=15 && e.getX()<=190 && e.getY()>=425 && e.getY()<=575){
-            holdingMeat = true;
+        if(backgroundName.equals("grill")){
+            if(e.getX()>=15 && e.getX()<=190 && e.getY()>=425 && e.getY()<=575){
+                holdingMeat = true;
+            } else{
+                for(Patty patty : allPatties){
+                    if(!holdingMeat && patty.getBorder().contains(e.getX(),e.getY())){
+                        holdingMeat = true;
+                        pattyHeld = patty;
+                    }
+                }
+                if(holdingMeat){
+                    for(int i = 0;i<stove.length;i++){
+                        for(int j = 0;j<stove[0].length;j++){
+                            if(stove[i][j] == pattyHeld){
+                                stove[i][j] = null;
+                                previousRow = i;
+                                previousColumn = j;
+                            }
+                        }
+                    }
+                }
 
+            }
+//            Rectangle rectangle = new Rectangle();
+//            rectangle.contains()
 //            previousX = e.getX();
 //            previousY = e.getY();
         }
@@ -725,7 +937,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        System.out.println("" + e.getX() + e.getY());
+        //System.out.println("" + e.getX() + e.getY());
 
         //label.setLocation(e.getX(),e.getY());
         if(condimentTimerOn){
