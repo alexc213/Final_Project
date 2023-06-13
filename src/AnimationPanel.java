@@ -233,21 +233,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         //label.setLocation(orangeRect.x,orangeRect.y);
 
         g2d.drawImage(background, 0,0,null);
-        ImageIcon icon = new ImageIcon("src/ketchup.png");
-        icon.setImage(icon.getImage().getScaledInstance(100,100,1));
-        g2d.drawImage(icon.getImage(),orangeRect.x,orangeRect.y,null);
 
-//        g2d.setStroke(new BasicStroke(5));
-//        g2d.setColor(Color.gray);
-//        Line ticketLine = new Line();
-//        ticketLine.setPoint1Values(0,10);
-//        ticketLine.setPoint2Values(400,10);
-//        ticketLine.draw(g2d);
-
-
-//        Oval ticketHolder = new Oval();
-//        ticketHolder.setPoint1Values(400,-75);
-//        ticketHolder.setPoint2Values(575,75);
         g2d.setColor(Color.BLACK);
         g2d.fillOval(750,-125,300,250);
         g2d.setColor(Color.DARK_GRAY);
@@ -257,7 +243,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         g2d.drawString("Drag Ticket Here",840,60);
         g2d.drawString("Money : " + money,875,650);
         //g2d.draw(ticket);
-        g2d.draw(redRect);
+        //g2d.draw(redRect);
 
         //ticketHolder.draw(g2d);
         //new ImageObserver;
@@ -899,6 +885,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 }
                 money += (double)right/ticket.getOrderName().size();
                 allToppings.clear();
+                allCustomers.remove(0);
             } else {
                 if(ticket.isOnHolder()){//reset to holder
                     ticket.setLocation(790,10);
