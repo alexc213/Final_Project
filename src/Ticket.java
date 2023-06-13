@@ -95,7 +95,7 @@ public class Ticket{
         onHolder = true;
         shrunk = false;
         //System.out.println(order);
-
+        System.out.println(orderName);
 
 
 
