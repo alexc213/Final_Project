@@ -241,7 +241,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
         g2d.drawLine(0,10,750,10);
         g2d.drawString("Drag Ticket Here",840,60);
-        g2d.drawString("Money : " + money,875,650);
+        g2d.drawString("Money : " + ((int)(money*100))/100.0,875,650);
         //g2d.draw(ticket);
         //g2d.draw(redRect);
 
@@ -860,13 +860,13 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 ticket.reset();
                 ticket.setOnHolder(true);
             } else if(end && backgroundName.equals("build") && e.getX()>=255 & e.getX()<=330 && e.getY()>=450 && e.getY()<=575){
-                System.out.println();
+                //System.out.println();
                 //ticket.shrink();
                 end = false;
                 int right = 0;
                 for(int i =0;i<ticket.getOrderName().size();i++){
-                    if(i<=allToppings.size()){
-                        if(ticket.getOrderName().get(i).contains(allToppings.get(i).getName())){
+                    if(i<allToppings.size()){
+                        if(ticket.getOrderName().get(i).contains(allToppings.get(i).getName()) && !ticket.getOrderName().get(i).contains("bottomBun") && !ticket.getOrderName().get(i).contains("topBun")){
                             right++;
                         }
                     }
@@ -883,9 +883,9 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                         }
                     }
                 }
-                money += (double)right/ticket.getOrderName().size();
+                money += (double)right/(ticket.getOrderName().size()-2);
                 allToppings.clear();
-                allCustomers.remove(0);
+                orderedCustomers.remove(0);
             } else {
                 if(ticket.isOnHolder()){//reset to holder
                     ticket.setLocation(790,10);
@@ -1379,7 +1379,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             }
             repaint();
         } else {
-            if(!holdingMeat){
+            if(!holdingMeat && !holdingCondiment && !holdingTopping){
                 if(!holdingTicket){
                     for(Ticket tempTicket : allTickets){
                         if(tempTicket != null && tempTicket.getRectangle().contains(e.getX(),e.getY())){
@@ -1435,6 +1435,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 //                    }
 //                }
 //            } else {
+            if(!holdingTicket) {
 
                 for (int i = donePatties.size() - 1; i >= 0; i--) {
                     Patty patty = donePatties.get(i);
@@ -1505,7 +1506,8 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
                 toppingLocation = new Point(e.getX(), e.getY());
 
-            //}
+                //}
+            }
         }
     }
 
