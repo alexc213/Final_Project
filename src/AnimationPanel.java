@@ -499,10 +499,10 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 ImageIcon backgroundIcon = new ImageIcon("src/grillRoom.png");
                 Image backgroundImage = backgroundIcon.getImage();
                 backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
-                if(backgroundName.equals("build")){
+                if(!backgroundName.equals("grill")){
                     for(Patty patty : donePatties){
-                        patty.setX(patty.getX()+585);
-                        patty.setY(patty.getY()-25);
+                        patty.setX(875);
+                        patty.setY((donePatties.indexOf(patty)+1)*(-25) + 550);
                     }
                 }
                 backgroundName = "grill";
@@ -511,10 +511,10 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 ImageIcon backgroundIcon = new ImageIcon("src/buildRoom.png");
                 Image backgroundImage = backgroundIcon.getImage();
                 backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
-                if(backgroundName.equals("grill")){
+                if(!backgroundName.equals("build")){
                     for(Patty patty : donePatties){
-                        patty.setX(patty.getX()-585);
-                        patty.setY(patty.getY()+25);
+                        patty.setX(290);
+                        patty.setY(donePatties.indexOf(patty)*(-25) +550);
                     }
                 }
                 backgroundName = "build";
@@ -1048,20 +1048,20 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                     allToppings.add(pattyHeld);
                 } else{
                     if(pattyHeld != null){
-                        pattyHeld.setX(285);
-                        pattyHeld.setY(donePatties.indexOf(pattyHeld)*(-10) +550);
+                        pattyHeld.setX(290);
+                        pattyHeld.setY(donePatties.indexOf(pattyHeld)*(-25) +550);
                     }
                 }
             } else{
                 if(pattyHeld != null){
-                    pattyHeld.setX(285);
-                    pattyHeld.setY(donePatties.indexOf(pattyHeld)*(-10) +550);
+                    pattyHeld.setX(290);
+                    pattyHeld.setY(donePatties.indexOf(pattyHeld)*(-25) +550);
                 }
             }
         }else{
             if(pattyHeld != null){
-                pattyHeld.setX(285);
-                pattyHeld.setY(donePatties.indexOf(pattyHeld)*(-10) +550);
+                pattyHeld.setX(290);
+                pattyHeld.setY(donePatties.indexOf(pattyHeld)*(-25) +550);
             }
 
         }
