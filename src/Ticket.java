@@ -18,7 +18,6 @@ public class Ticket{
 
     public Ticket(){
         totalTickets ++;
-        //ticketNumber = totalTickets;
         for(int i = 0;i<totalTickets;i++){
             ticketNumber ++;
         }
@@ -66,25 +65,15 @@ public class Ticket{
                 pattyCount++;
                 order.add(icon.getImage().getScaledInstance(175,35,1));
             } else{
-                //order.add(icon.getImage());
                 order.add(icon.getImage().getScaledInstance(50,25,1));
             }
             if(pattyCount >= 2){
                 allOptions.remove(meatType);
 
             }
-            //System.out.println(allOptions);
-            //order.add(image);
 
-
-
-            //order.add(icon.getImage().getScaledInstance(25,25,1));
         }
-        //System.out.println(pattyCount);
-        //orderLocation = new ArrayList<>();
-
         ImageIcon icon = new ImageIcon("src/ticket.png");
-        //icon.setImage(icon.getImage().getScaledInstance());
         ticket = icon.getImage().getScaledInstance(175,390,1);
         location = new Point(790,10);
 
@@ -94,11 +83,6 @@ public class Ticket{
 
         onHolder = true;
         shrunk = false;
-        //System.out.println(order);
-        System.out.println(orderName);
-
-
-
     }
     public String getMeatType(){
         return meatType;
@@ -139,23 +123,16 @@ public class Ticket{
     public void setLocation(int x,int y){
         location.setLocation(x,y);
         rectangle.setLocation(x,y);
-//        if(x == 790 && y == 10){
-//            onHolder = true;
-//        }
     }
 
     public void setOnHolder(boolean newOnHolder){
         onHolder = newOnHolder;
     }
 
-//    public void setRectangleSize(int width, int height){
-//        rectangle.setSize(width, height);
-//    }
 
     public void shrink(){
         rectangle.setSize(50, 75);
         ImageIcon icon = new ImageIcon("src/ticket.png");
-        //icon.setImage(icon.getImage().getScaledInstance());
         ticket = icon.getImage().getScaledInstance(50,75,1);
         shrunk = true;
         for(int i = 0;i<order.size();i++) {
@@ -176,7 +153,6 @@ public class Ticket{
     public void reset(){
         rectangle.setSize(175, 390);
         ImageIcon icon = new ImageIcon("src/ticket.png");
-        //icon.setImage(icon.getImage().getScaledInstance());
         ticket = icon.getImage().getScaledInstance(175,390,1);
         shrunk = false;
         for(int i = 0;i<order.size();i++) {
@@ -192,48 +168,4 @@ public class Ticket{
 
         }
     }
-
-//    @Override
-//    public void mouseClicked(MouseEvent e) {
-//
-//    }
-//
-//    @Override
-//    public void mousePressed(MouseEvent e) {
-//
-//    }
-//
-//    @Override
-//    public void mouseReleased(MouseEvent e) {
-//
-//    }
-//
-//    @Override
-//    public void mouseEntered(MouseEvent e) {
-//
-//    }
-//
-//    @Override
-//    public void mouseExited(MouseEvent e) {
-//
-//    }
-//
-//    @Override
-//    public void mouseDragged(MouseEvent e) {
-//        if(rectangle.contains(e.getX(),e.getY())){
-//            location.setLocation(e.getX(),e.getY());
-//            rectangle.setLocation(e.getX(),e.getY());
-//        }
-//    }
-//
-//    @Override
-//    public void mouseMoved(MouseEvent e) {
-//
-//    }
-//    public void paint(Graphics gp){
-//        super.paint(gp); // must do this!
-//        Graphics2D g2d = (Graphics2D) gp;
-//
-//
-//    }
 }

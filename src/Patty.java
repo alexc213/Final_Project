@@ -23,8 +23,6 @@ public class Patty extends Topping implements ActionListener {
         border.setSize(150,60);
         border.setLocation(x-75,y-30);
         name = "raw";
-//        border.setPoint1Values(x-75,y-30);
-//        border.setPoint2Values(x+75,y+30);
         timer = new Timer(10,this);
         isTop = false;
         patty = new ArrayList<>();
@@ -84,18 +82,6 @@ public class Patty extends Topping implements ActionListener {
         if(e.getSource() instanceof Timer){
             bottomTime += 10;
             totalTime+=10;
-            //test
-//            ImageIcon icon = new ImageIcon("src/rawPatty.png");
-//            icon.setImage(icon.getImage().getScaledInstance(160,80,1));
-//            patty.set(0,icon.getImage());
-//
-//            icon = new ImageIcon("src/marks.png");
-//            icon.setImage(icon.getImage().getScaledInstance(160,50,1));
-//            patty.set(1,icon.getImage());
-//
-//            icon = new ImageIcon("src/burntBottom.png");
-//            icon.setImage(icon.getImage().getScaledInstance(160,60,1));
-//            patty.set(2,icon.getImage());
 
             if(topTime != 0){
                 ImageIcon icon = new ImageIcon("src/marks.png");
