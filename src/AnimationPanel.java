@@ -501,8 +501,11 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
                 if(!backgroundName.equals("grill")){
                     for(Patty patty : donePatties){
-                        patty.setX(875);
-                        patty.setY((donePatties.indexOf(patty)+1)*(-25) + 550);
+                        if(!allToppings.contains(patty)){
+                            patty.setX(875);
+                            patty.setY((donePatties.indexOf(patty)+1)*(-25) + 550);
+                        }
+
                     }
                 }
                 backgroundName = "grill";
@@ -513,8 +516,11 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 backgroundIcon.setImage(backgroundImage.getScaledInstance(1000,600,2));
                 if(!backgroundName.equals("build")){
                     for(Patty patty : donePatties){
-                        patty.setX(290);
-                        patty.setY(donePatties.indexOf(patty)*(-25) +550);
+                        if(!allToppings.contains(patty)){
+                            patty.setX(290);
+                            patty.setY(donePatties.indexOf(patty)*(-25) +550);
+                        }
+
                     }
                 }
                 backgroundName = "build";
@@ -835,7 +841,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                         }
                     }
                 } else{
-                    if(pattyHeld != null){
+                    if(pattyHeld != null && previousRow>=0 && previousColumn>=0){
                         stove[previousRow][previousColumn] = pattyHeld;
                         pattyHeld.startTimer();
                     }
