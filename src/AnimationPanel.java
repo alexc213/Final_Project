@@ -65,6 +65,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
     private boolean end;
     private ArrayList<Patty> donePatties;
     private double money;
+    private ArrayList<Glide> reset;
 
 
     public AnimationPanel(){
@@ -79,7 +80,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
         timer = new Timer(10, this);
         timer.start();
-        customerTimer = new Timer((int)(Math.random()*30000)+30000,this);
+        customerTimer = new Timer((int)(Math.random()*15000)+30000,this);
         customerTimer.start();
         allCustomers = new ArrayList<>();
         Customer customer = new Customer();
@@ -130,6 +131,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         holdingCondiment = false;
         condimentHeld = null;
         end = false;
+        reset = new ArrayList<>();
 
         money = 0.0;
 
@@ -145,9 +147,6 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
         grill = new JButton(new ImageIcon("src/grill.png"));
         build = new JButton(new ImageIcon("src/build.png"));
 
-        /*
-
-         */
         add(order);
         add(grill);
         add(build);
@@ -170,6 +169,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
     @Override
     public void paint(Graphics gp) {
+
         super.paint(gp);
         Graphics2D g2d = (Graphics2D) gp;
 
@@ -280,7 +280,6 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             for(Patty[] row : stove){
                 for(Patty tempPatty : row){
                     if(tempPatty != null){
-
                         ArrayList<Image> images = tempPatty.getPatty();
                         g2d.drawImage(images.get(0),tempPatty.getX()-80, tempPatty.getY()-40,null);
                         if(images.get(1) != null){
@@ -288,6 +287,26 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                         }
                         g2d.drawImage(images.get(2),tempPatty.getX()-78, tempPatty.getY()-15,null);
 
+                        //draw timer
+                        g2d.drawOval(tempPatty.getX() - 10, tempPatty.getY() - 50, 25,25);
+                        g2d.setStroke(new BasicStroke(1));
+                        g2d.drawLine(tempPatty.getX()+2,tempPatty.getY() - 44,tempPatty.getX() + 2,tempPatty.getY() - 50);
+                        g2d.drawLine(tempPatty.getX()+2,tempPatty.getY() - 25,tempPatty.getX() + 2,tempPatty.getY() - 32);
+
+                        g2d.drawLine(tempPatty.getX()-11,tempPatty.getY() -37,tempPatty.getX() -4,tempPatty.getY()-37);
+                        g2d.drawLine(tempPatty.getX()+8,tempPatty.getY() -37,tempPatty.getX() +15,tempPatty.getY()-37);
+
+                        g2d.setStroke(new BasicStroke(2));
+                        if (tempPatty.getBottomTime()<=20000) {
+                            double degree = tempPatty.getBottomTime()/3333.0;
+                            g2d.drawLine(tempPatty.getX()+2,tempPatty.getY() -37,tempPatty.getX()+2+(int)(12.5*Math.sin(degree)),tempPatty.getY() -37 + (int)(-12.5*Math.cos(degree)));
+                        } else {
+                            g2d.setColor(Color.RED);
+                            g2d.drawOval(tempPatty.getX() - 10, tempPatty.getY() - 50, 25,25);
+                            g2d.setColor(Color.BLACK);
+                        }
+//
+                        g2d.setStroke(new BasicStroke(3));
                     }
                 }
             }
@@ -422,6 +441,21 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                 }
 
             }
+
+            for (int i = 0;i<reset.size();i++) {
+                Glide glide = reset.get(i);
+                if (glide.getX() >= glide.getDestX()-50 && glide.getX() <= glide.getDestX()+50 && glide.getY() >= glide.getDestY()-50 && glide.getY() <= glide.getDestY()+50 ) {
+                    reset.remove(i);
+                    i--;
+
+                } else {
+                    glide.setX(glide.getX()+glide.getDeltaX());
+                    glide.setY(glide.getY()+glide.getDeltaY());
+
+                }
+
+                g2d.drawImage(glide.getImage(),glide.getX(),glide.getY(),null);
+            }
         }
 
 
@@ -472,6 +506,7 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
         g2d.setColor(Color.GRAY);
         g2d.fillOval(870,20,15,15);
+
     }
 
     @Override
@@ -484,8 +519,9 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
             } else if(e.getSource() == customerTimer){
                 Customer customer = new Customer();
                 allCustomers.add(customer);
-                customerTimer.setDelay((int)(Math.random()*30000)+30000);
                 customerTimer.stop();
+                customerTimer = new Timer((int)(Math.random()*15000)+30000,this);
+                System.out.println(customerTimer.getDelay());
                 customerTimer.start();
             }
         }else if(e.getSource() instanceof JButton){
@@ -1018,13 +1054,30 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                             allToppings.add(topping);
                         }
                     }
-                }
-            } else{
-                if(toppingHeld.equals("bottomBun") && e.getX()>=475 &&e.getX()<=575){
+                } else {
                     ImageIcon c = new ImageIcon("src/" + toppingHeld + ".png");
                     c.setImage(c.getImage().getScaledInstance(140, 70, 1));
-                    Topping topping = new Topping(e.getX() - 70, e.getY() - 35, toppingHeld, c.getImage(), false);
-                    allToppings.add(topping);
+                    Glide glide = new Glide(c.getImage(),e.getX(),e.getY(),Glide.findDestX(toppingHeld),Glide.findDestY(toppingHeld));
+                    reset.add(glide);
+                }
+            } else{
+                if(toppingHeld.equals("bottomBun")){
+                    if (e.getX()>=475 &&e.getX()<=575) {
+                        ImageIcon c = new ImageIcon("src/" + toppingHeld + ".png");
+                        c.setImage(c.getImage().getScaledInstance(140, 70, 1));
+                        Topping topping = new Topping(e.getX() - 70, e.getY() - 35, toppingHeld, c.getImage(), false);
+                        allToppings.add(topping);
+                    } else {
+                        ImageIcon c = new ImageIcon("src/" + toppingHeld + ".png");
+                        c.setImage(c.getImage().getScaledInstance(140, 70, 1));
+                        Glide glide = new Glide(c.getImage(),e.getX(),e.getY(),Glide.findDestX("bottomBun"),Glide.findDestY("bottomBun"));
+                        reset.add(glide);
+                    }
+                } else {
+                    ImageIcon c = new ImageIcon("src/" + toppingHeld + ".png");
+                    c.setImage(c.getImage().getScaledInstance(140, 70, 1));
+                    Glide glide = new Glide(c.getImage(),e.getX(),e.getY(),Glide.findDestX(toppingHeld),Glide.findDestY(toppingHeld));
+                    reset.add(glide);
                 }
             }
             toppingHeld = null;
@@ -1043,6 +1096,15 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
                         allToppings.add(topping);
                     }
                 }
+            }
+            if (condimentHeld.equals("ketchupSplatter")) {
+                redRect.setLocation(650,400);
+            } else if (condimentHeld.equals("mustardSplatter")) {
+                yellowRect.setLocation(725,400);
+            } else if (condimentHeld.equals("bbqSplatter")) {
+                brownRect.setLocation(800,400);
+            } else if (condimentHeld.equals("mayoSplatter")) {
+                whiteRect.setLocation(875,400);
             }
 
             holdingCondiment = false;
@@ -1157,36 +1219,36 @@ public class AnimationPanel extends JPanel implements ActionListener, MouseListe
 
                 for (int i = donePatties.size() - 1; i >= 0; i--) {
                     Patty patty = donePatties.get(i);
-                    if (patty == pattyHeld && patty.getBorder().contains(e.getX(), e.getY()) && !allToppings.contains(pattyHeld)) {
+                    if (patty == pattyHeld &&  !allToppings.contains(pattyHeld)) {
                         patty.setX(e.getX());
                         patty.setY(e.getY());
                         break;
                     }
                 }
 
-                if (e.getX() >= 0 && e.getX() <= 160) {
-                    if (e.getY() >= 165 && e.getY() <= 240) {
-                        holdingTopping = true;
-                    }
-                    if (e.getY() > 240 && e.getY() <= 300) {
-                        holdingTopping = true;
-                    }
-                    if (e.getY() > 300 && e.getY() <= 365) {
-                        holdingTopping = true;
-                    }
-                    if (e.getY() > 365 && e.getY() <= 420) {
-                        holdingTopping = true;
-                    }
-                    if (e.getY() > 420 && e.getY() <= 480) {
-                        holdingTopping = true;
-                    }
-                    if (e.getY() > 480 && e.getY() <= 535) {
-                        holdingTopping = true;
-                    }
-                    if (e.getY() > 535 && e.getY() <= 600) {
-                        holdingTopping = true;
-                    }
-                }
+//                if (e.getX() >= 0 && e.getX() <= 160) {
+//                    if (e.getY() >= 165 && e.getY() <= 240) {
+//                        holdingTopping = true;
+//                    }
+//                    if (e.getY() > 240 && e.getY() <= 300) {
+//                        holdingTopping = true;
+//                    }
+//                    if (e.getY() > 300 && e.getY() <= 365) {
+//                        holdingTopping = true;
+//                    }
+//                    if (e.getY() > 365 && e.getY() <= 420) {
+//                        holdingTopping = true;
+//                    }
+//                    if (e.getY() > 420 && e.getY() <= 480) {
+//                        holdingTopping = true;
+//                    }
+//                    if (e.getY() > 480 && e.getY() <= 535) {
+//                        holdingTopping = true;
+//                    }
+//                    if (e.getY() > 535 && e.getY() <= 600) {
+//                        holdingTopping = true;
+//                    }
+//                }
                 toppingLocation = new Point(e.getX(), e.getY());
 
             }

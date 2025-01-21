@@ -70,6 +70,15 @@ public class Patty extends Topping implements ActionListener {
     public ArrayList<Image> getPatty() {
         return patty;
     }
+
+    public int getTopTime() {
+        return topTime;
+    }
+
+    public int getBottomTime() {
+        return bottomTime;
+    }
+
     public void flip(){
         int temp = bottomTime;
         bottomTime = topTime;
